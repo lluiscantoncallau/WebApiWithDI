@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WebApiWithDI.Models;
 
 namespace WebApiWithDI.Initializer
@@ -13,7 +10,7 @@ namespace WebApiWithDI.Initializer
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var _context = (TodoContext)serviceProvider.GetService(typeof(TodoContext)))
-            {                
+            {
                 if (_context.TodoItems.Any())
                 {
                     return;
