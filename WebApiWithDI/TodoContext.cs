@@ -7,8 +7,6 @@ namespace WebApiWithDI
     {
         public TodoContext(DbContextOptions<TodoContext> options) : base(options)
         {
-            Database.EnsureCreated();
-            Database.Migrate(); //i have tried this too 
         }
 
         public DbSet<TodoItem> TodoItems { get; set; }

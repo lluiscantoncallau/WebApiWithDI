@@ -11,6 +11,8 @@ namespace WebApiWithDI.Initializer
         {
             using (var _context = (TodoContext)serviceProvider.GetService(typeof(TodoContext)))
             {
+                _context.Database.EnsureCreated();
+
                 if (_context.TodoItems.Any())
                 {
                     return;

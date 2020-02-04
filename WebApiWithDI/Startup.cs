@@ -9,9 +9,12 @@ namespace WebApiWithDI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -19,14 +22,22 @@ namespace WebApiWithDI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            if (_env.IsProduction())
+            {
+                services.AddDbContext<TodoContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
+            }
+            else
+            {
+                services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+            }
 
-            services.AddDbContext<TodoContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
             services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
