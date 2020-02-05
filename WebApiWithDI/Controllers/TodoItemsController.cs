@@ -39,7 +39,7 @@ namespace WebApiWithDI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
         {
-            if (id != todoItem.Id)
+            if (todoItem== null || id != todoItem.Id)
             {
                 return BadRequest();
             }
@@ -70,6 +70,10 @@ namespace WebApiWithDI.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
+            if(todoItem == null)
+            {
+                return BadRequest();
+            }
             _context.TodoItems.Add(todoItem);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
