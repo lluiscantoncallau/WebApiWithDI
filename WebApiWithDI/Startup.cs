@@ -8,29 +8,36 @@ using Microsoft.Extensions.Hosting;
 namespace WebApiWithDI
 {
     public class Startup
-    {
-        private readonly IWebHostEnvironment _env;
-
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
-        {
-            Configuration = configuration;
-            _env = env;
-        }
-
+    {       
+        private IWebHostEnvironment CurrentEnvironment { get; }
         public IConfiguration Configuration { get; }
+
+        public Startup(IWebHostEnvironment env)
+        {
+            var dom = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json")
+                .AddEnvironmentVariables()
+                .Build();
+
+            Configuration = dom;
+            CurrentEnvironment = env;
+        }               
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (_env.IsProduction())
+            //Comment by generate Migrations
+            if (CurrentEnvironment.IsProduction())
             {
-                services.AddDbContext<TodoContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("SqlConnectionString")));
+                services.AddDbContext<TodoContextSqlServer>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             }
             else
             {
                 services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             }
-
+            //services.AddDbContext<TodoContextSqlServer>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
         }
 

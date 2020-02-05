@@ -48,7 +48,7 @@ namespace WebApiWithDI.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -71,7 +71,7 @@ namespace WebApiWithDI.Controllers
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
 
@@ -87,7 +87,7 @@ namespace WebApiWithDI.Controllers
             }
 
             _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return todoItem;
 

@@ -11,12 +11,6 @@ namespace WebApiWithDI
 
         public DbSet<TodoItem> TodoItems { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<TodoItem>()
-                .HasKey(x => x.Id);
-
-        }
+       
     }
 }
