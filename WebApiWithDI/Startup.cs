@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 namespace WebApiWithDI
 {
     public class Startup
-    {       
+    {
         private IWebHostEnvironment CurrentEnvironment { get; }
         public IConfiguration Configuration { get; }
 
@@ -23,7 +23,7 @@ namespace WebApiWithDI
 
             Configuration = dom;
             CurrentEnvironment = env;
-        }               
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -39,6 +39,7 @@ namespace WebApiWithDI
             }
             //services.AddDbContext<TodoContextSqlServer>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +61,8 @@ namespace WebApiWithDI
             {
                 endpoints.MapControllers();
             });
+
+            app.UseHealthChecks("/health");
         }
     }
 }
