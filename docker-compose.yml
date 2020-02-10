@@ -1,7 +1,8 @@
-version: '3.4'
+version: '3.5'
 
 networks: 
-  localdev:    
+  localdev:
+    name: localdev
 
 services:
   webapiwithdi:
@@ -12,12 +13,17 @@ services:
     networks:
       - localdev
     restart: always
+    ports:
+      - "62528:80"
+    depends_on: 
+      - db-server
   db-server:
-    image: mcr.microsoft.com/mssql/server:2017-latest
-    container_name: db-server
-    environment:
-      SA_PASSWORD: Altran2019!
-      ACCEPT_EULA: Y    
+    image: sqlserver
+    build:
+      context: .
+      dockerfile: WebApiWithDI/sqlserver.Dockerfile
+    volumes:
+      - ./data:/var/opt/mssql/data 
     ports:
       - "1433:1433"
     networks: 

@@ -16,7 +16,7 @@ Comment Environment IF by create migrations
  Add-Migration WebApiWithDI.TodoContextSqlServer -Context WebApiWithDI.TodoContextSqlServer
 
  
-GET https://localhost:32770/api/TodoItemSqlServer
-GET https://localhost:32770/api/TodoItemSqlServer/1
+GET https://localhost:32770/api/TodoItemSqlServers
+GET https://localhost:32770/api/TodoItemSqlServers/1
 
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Altran2019!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+docker run -v -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Altran2019!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2017-latest

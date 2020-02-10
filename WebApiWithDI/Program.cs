@@ -14,7 +14,7 @@ namespace WebApiWithDI
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", EnvironmentVariableTarget.User);
                 if (environment == "Development")
                 {
                     DbInitializer.Initialize(services);

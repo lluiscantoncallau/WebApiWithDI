@@ -12,10 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/TodoItemSqlServers",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      "launchUrl": "api/TodoItemSqlServers"
     },
     "WebApiWithDI": {
       "commandName": "Project",

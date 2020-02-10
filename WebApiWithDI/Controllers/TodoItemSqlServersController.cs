@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiWithDI;
 using WebApiWithDI.Models;
+using WebApiWithDI.Repository;
 
 namespace WebApiWithDI.Controllers
 {
@@ -14,25 +15,23 @@ namespace WebApiWithDI.Controllers
     [ApiController]
     public class TodoItemSqlServersController : ControllerBase
     {
-        private readonly TodoContextSqlServer _context;
+        private readonly EfTodoItemRepository _repository;
 
-        public TodoItemSqlServersController(TodoContextSqlServer context)
+        public TodoItemSqlServersController(EfTodoItemRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/TodoItemSqlServers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItemSqlServer>>> GetTodoItemSqlServer()
-        {
-            return await _context.TodoItemSqlServer.ToListAsync().ConfigureAwait(false);
-        }
+        public async Task<ActionResult<IEnumerable<TodoItemSqlServer>>> GetTodoItemSqlServer() => await _repository.GetAll().ConfigureAwait(false);
 
         // GET: api/TodoItemSqlServers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoItemSqlServer>> GetTodoItemSqlServer(long id)
         {
-            var todoItemSqlServer = await _context.TodoItemSqlServer.FindAsync(id);
+
+            var todoItemSqlServer = await _repository.Get(id).ConfigureAwait(false);
 
             if (todoItemSqlServer == null)
             {
@@ -48,27 +47,18 @@ namespace WebApiWithDI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItemSqlServer(long id, TodoItemSqlServer todoItemSqlServer)
         {
-            if (id != todoItemSqlServer.Id)
+            if (todoItemSqlServer != null && id != todoItemSqlServer.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(todoItemSqlServer).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await _repository.Update(todoItemSqlServer).ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TodoItemSqlServerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -80,10 +70,8 @@ namespace WebApiWithDI.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoItemSqlServer>> PostTodoItemSqlServer(TodoItemSqlServer todoItemSqlServer)
         {
-            if(todoItemSqlServer == null) { return BadRequest(); }
-            _context.TodoItemSqlServer.Add(todoItemSqlServer);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-
+            if (todoItemSqlServer == null) { return BadRequest(); }
+            await _repository.Add(todoItemSqlServer).ConfigureAwait(false);
             return CreatedAtAction("GetTodoItemSqlServer", new { id = todoItemSqlServer.Id }, todoItemSqlServer);
         }
 
@@ -91,21 +79,13 @@ namespace WebApiWithDI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<TodoItemSqlServer>> DeleteTodoItemSqlServer(long id)
         {
-            var todoItemSqlServer = await _context.TodoItemSqlServer.FindAsync(id);
+            var todoItemSqlServer = await _repository.Delete(id).ConfigureAwait(false);
             if (todoItemSqlServer == null)
             {
                 return NotFound();
             }
 
-            _context.TodoItemSqlServer.Remove(todoItemSqlServer);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-
             return todoItemSqlServer;
-        }
-
-        private bool TodoItemSqlServerExists(long id)
-        {
-            return _context.TodoItemSqlServer.Any(e => e.Id == id);
         }
     }
 }
